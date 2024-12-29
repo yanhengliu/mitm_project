@@ -1,0 +1,9 @@
+{
+  "files.associations": {
+    "*.md": "markdown",
+    "utils.h": "c",
+    "inttypes.h": "c",
+    "speck.h": "c",
+    "distributed_dict.h": "c"
+  }
+}
