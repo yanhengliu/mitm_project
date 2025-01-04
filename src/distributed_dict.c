@@ -385,14 +385,14 @@ int distributed_dict_search(int maxres, uint64_t k1[], uint64_t k2[])
 
     /* For storing the responses we generate for each rank that queries us */
     // Each query might produce multiple (x,z) or none.
-    // We'll do it similarly to outcounts but call them resp_outcounts.
+    // Do it similarly to outcounts but call them resp_outcounts.
     int *resp_outcounts = (int*) calloc(world_size, sizeof(int));
     if(!resp_outcounts){
         fprintf(stderr,"[Rank %d] cannot allocate resp_outcounts\n", world_rank);
         MPI_Abort(MPI_COMM_WORLD,1);
     }
 
-    /* We'll store the actual (x,z) pairs in resp_outbuf[r]. 
+    /* Store the actual (x,z) pairs in resp_outbuf[r]. 
        Then we do a second pass to send them back to r.
     */
     uint64_t **resp_outbuf = (uint64_t**) calloc(world_size,sizeof(uint64_t*));
@@ -543,7 +543,7 @@ int distributed_dict_search(int maxres, uint64_t k1[], uint64_t k2[])
         }
     }
 
-    /* now we have built resp_outbuf[r] with resp_outcounts[r] => # of (x,z) pairs to send back to rank r */
+    /* built resp_outbuf[r] with resp_outcounts[r] => # of (x,z) pairs to send back to rank r */
     // free queries outbuf
     for(int r=0; r<world_size; r++){
         if(outcounts[r]>0 && outbuf[r]){
@@ -555,8 +555,8 @@ int distributed_dict_search(int maxres, uint64_t k1[], uint64_t k2[])
     free(incounts);
 
     /* Step 2: point-to-point chunk-based exchange of (x,z) responses
-       => we send resp_outbuf[r] to rank r, 
-       => we receive from rank r => do is_good_pair => store in k1[],k2[] if pass
+       => send resp_outbuf[r] to rank r, 
+       => receive from rank r => do is_good_pair => store in k1[],k2[] if pass
     */
 
     // incounts2[r] => how many (x,z) we will receive from rank r
@@ -579,11 +579,10 @@ int distributed_dict_search(int maxres, uint64_t k1[], uint64_t k2[])
     }
 
     /* allocate a local buffer to store the (x,z) we receive from rank r in the response phase => then is_good_pair(x,z) */
-    // we'll do chunk-based again => no need for large single array
-    // but if you want to store them all at once, you can, but that might be huge. Let's do chunk-based verify.
+    // do chunk-based again => no need for large single array
 
     int found=0; // how many solutions we found in the entire process
-    // we will store partial solutions in arrays k1[], k2[], up to maxres
+    // store partial solutions in arrays k1[], k2[], up to maxres
 
     for(int r=0; r<world_size; r++){
         if(r==world_rank) continue;
@@ -694,10 +693,10 @@ int distributed_dict_search(int maxres, uint64_t k1[], uint64_t k2[])
     int total_found=0;
     MPI_Reduce(&found,&total_found,1,MPI_INT,MPI_SUM,0,MPI_COMM_WORLD);
 
-    // next, each rank has up to min(found, maxres) solutions in (k1[],k2[]). We gather them.
-    // let's do a two-step gather approach:
+    // next, each rank has up to min(found, maxres) solutions in (k1[],k2[]). Gather them.
+    // do a two-step gather approach:
     int send_sol=(found>maxres)?(maxres*2):(found*2);
-    // we only gather up to 2*maxres local solutions in the worst case
+    // only gather up to 2*maxres local solutions in the worst case
     int *all_counts=(int*) calloc(world_size,sizeof(int));
     MPI_Gather(&send_sol,1,MPI_INT,all_counts,1,MPI_INT,0,MPI_COMM_WORLD);
 
