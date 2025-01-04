@@ -29,7 +29,10 @@ To run this project, follow these steps:
    ```bash
    mpirun -np 4 bin/mitm --n 30 --C0 12392f511a159c4f --C1 c840cb1a5527641d
    ```
-
+   Or running on the Gird5000
+   ```bash
+   mpiexec --n 30 --hostfile $OAR_NODEFILE bin/mitm --n 33 --C0 1ba377d7cab89927 --C1 a5edede78a7dbe3d
+   ```
 4. **Optional: Clean Compiled Files**  
    To clean up object files and the generated executable, run:
    ```bash
