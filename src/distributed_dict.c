@@ -757,15 +757,6 @@ int distributed_dict_search(int maxres, uint64_t k1[], uint64_t k2[])
     return total_found;
 }
 
-
-#include <stdio.h>
-#include <stdlib.h>
-#include <inttypes.h>
-#include <mpi.h>
-#include "speck.h"
-#include "utils.h"
-#include "distributed_dict.h"
-
 /**
  * Prints statistics for the distributed dictionary across all MPI ranks.
  */

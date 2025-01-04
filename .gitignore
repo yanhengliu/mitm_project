@@ -8,6 +8,7 @@ build/
 # Ignore system files
 .DS_Store
 Thumbs.db
+.vscode
 
 # Ignore temporary files
 *.swp
