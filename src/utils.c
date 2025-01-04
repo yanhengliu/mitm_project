@@ -4,11 +4,28 @@
 #include <getopt.h>
 #include <err.h>
 
+/**
+ * Retrieves the current time in seconds.
+ *
+ * @return The current time in seconds since the Unix epoch (January 1, 1970).
+ */
 double wtime()
 {
     struct timeval ts;
     gettimeofday(&ts, NULL);
     return (double)ts.tv_sec + ts.tv_usec / 1E6;
+}
+
+/**
+ * Retrieves the current time in milliseconds.
+ *
+ * @return The current time in milliseconds since the Unix epoch (January 1, 1970).
+ */
+double wtime_ms()
+{
+    struct timeval ts;
+    gettimeofday(&ts, NULL);
+    return (double)ts.tv_sec * 1E3 + ts.tv_usec / 1E3;
 }
 
 void human_format(uint64_t n, char *target)
@@ -67,7 +84,7 @@ void process_command_line_options(int argc, char ** argv, uint64_t *n, uint64_t 
     char ch;
     int set = 0;
     uint64_t N=0;
-    uint32_t LocalC[2][2];
+    uint32_t LocalC[2][2] = {{0,0},{0,0}};
 
     while ((ch = getopt_long(argc, argv, "", longopts, NULL)) != -1) {
         switch (ch) {

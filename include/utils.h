@@ -7,6 +7,8 @@
 #include <stdbool.h>
 
 double wtime();
+double wtime_ms();
+
 void human_format(uint64_t n, char *target);
 uint64_t murmur64(uint64_t x);
 
